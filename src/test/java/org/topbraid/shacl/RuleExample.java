@@ -15,7 +15,7 @@ public class RuleExample {
 
         // Load the main data model that contains rule(s)
         Model dataModel = JenaUtil.createMemoryModel();
-        dataModel.read(RuleExample.class.getResourceAsStream("sh/tests/rules/triple/rectangle.test.ttl"), "urn:dummy",
+        dataModel.read(RuleExample.class.getResourceAsStream("/sh/tests/entailment.ttl"), null,
                 FileUtils.langTurtle);
 
         // Perform the rule calculation, using the data model

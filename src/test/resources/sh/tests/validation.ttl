@@ -1,0 +1,62 @@
+# data_shapes_file.ttl
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.com/> .
+
+### DATA
+
+ex:a ex:p ex:b .
+
+### SHAPES
+
+<http://example.com/>
+    sh:entailment sh:Rules ;
+    sh:declare [
+        sh:prefix "ex" ;
+        sh:namespace "http://example.com/"^^xsd:anyURI ;
+    ] .
+
+ex:TestShape
+    a sh:NodeShape ;
+    sh:targetNode ex:a ;
+    # Inference rules that should be run before validation
+    sh:rule [ # changing this to a triple rule has no effect on bug
+        a sh:SPARQLRule ;
+        sh:prefixes <http://example.com/> ;
+        sh:construct """
+            CONSTRUCT {
+                ex:a ex:q ex:b .
+            }
+            WHERE {
+                ex:a ex:p ex:b .
+            }
+        """ ;
+        sh:order 0 ; # changing this to -2 has no effect on bug
+    ] ;
+    sh:rule [ # changing this to a triple rule has no effect on bug
+        a sh:SPARQLRule ;
+        sh:prefixes <http://example.com/> ;
+        sh:construct """
+            CONSTRUCT {
+                ex:a ex:r ex:b .
+            }
+            WHERE {
+                ex:a ex:q ex:b .
+            }
+        """ ;
+        sh:order 1 ; # changing this to -1 has no effect on bug
+    ] ;
+    # Validation that should be done after all inference rules
+    sh:property [
+        sh:path ex:p ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ex:q ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ex:r ;
+        sh:minCount 1 ;
+    ] .

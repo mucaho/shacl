@@ -93,6 +93,7 @@ public class RuleUtil {
 				unionModel.getGraph(),
 				shapesModel.getGraph()
 			});
+			unionGraph.setBaseGraph(dataModel.getGraph());
 			shapesModel = ModelFactory.createModelForGraph(unionGraph);
 		}
 
